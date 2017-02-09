@@ -1,0 +1,24 @@
+
+
+
+Ypologismos:
+    
+    ☐ Αν είναι για 2 ενήλικες και 1 παιδί 8 ετών, τοτε πρέπει να προσθέσουμε €60 + τιμή παιδιού που περιλαμβάνεται σε αυτή την κατηγορία, ας πούμε €10, οπότε σύνολο €70.
+
+    ☐ Αν είναι για 2 ενήλικες και 1 παιδί 8 ετών, τοτε πρέπει να προσθέσουμε €60 + €10 τιμή παιδιού  + 15 Χ 2 ημιδιατροφές ενηλίκων + 1 Χ 10 ημιδιατροφή για παιδί, σύνολο €110
+
+
+
+
+
+bug in  front end:
+    add rate with single use price, add new withought single use
+    keno stis poleis sto property isws exei problhma
+
+
+Staging Server Roomier:
+    ssh roomier@188.166.54.28
+Roomier Server:s
+    ssh roomier@178.62.246.164
+Onetourismo Server:
+    ssh roomier@128.199.34.214

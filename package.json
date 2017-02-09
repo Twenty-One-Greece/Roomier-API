@@ -1,0 +1,27 @@
+{
+  "name": "roomier_api",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hello Business",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.1.4",
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "crypto": "0.0.3",
+    "express": "^4.14.0",
+    "express-jwt-token": "^0.1.5",
+    "jsonwebtoken": "^7.1.9",
+    "jwt-simple": "^0.5.1",
+    "moment": "^2.17.1",
+    "multer": "^1.2.1",
+    "mysql": "^2.12.0",
+    "node-mysql": "^0.4.2",
+    "nodemailer": "^2.6.4",
+    "password-hash": "^1.2.2"
+  }
+}
