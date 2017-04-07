@@ -15,12 +15,13 @@ var connection = require('../config/connect.js');
 router.post('/user/:userID/properties/:propertyID/roomTypes/:roomTypeID/rates/new',
 function(req, res, next) {
   // Format data
-  var data = req.body;
-  var dates = data.dates;
-  delete data.dates;
-  var rates_childPolicies = data.rates_childPolicies;
-  delete data.rates_childPolicies;
-  var result = {};
+  let data = req.body
+  let dates = data.dates
+  let childPolicies = data.rates_childPolicies
+  let result = {}
+  let errors = []
+  delete data.rates_childPolicies
+  delete data.dates
 
   // Check if userID in the req is the same as the post data
   if (req.params.userID != data.userID ||
@@ -32,29 +33,29 @@ function(req, res, next) {
   }
 
   // Validate token
-  checkToken(req, res, function() {
-
-    // Fore every set of dates
-    for (var i = 0; i < dates.length; i++) {
-      data.startDate = dates[i].startDate;
-      data.endDate = dates[i].endDate;
+  checkToken(req, res, () => {
+    // For every set of dates make a new rate
+    dates.forEach( (date, i) => {
+      data.startDate = date.startDate
+      data.endDate = date.endDate
+      const sql = 'insert into rates set ?'
 
       if (data.startDate && data.endDate) {
-        connection.query({
-          sql: 'insert into rates set ?',
-          values: [data]
-        }), function(err, rows, fields) {
+        connection.query(sql, data, (err, rows, fields) => {
           // Insert policies of rate in db and store result
-          saveRateChildPolicies(rates_childPolicies, rows.insertId);
-        }
+          let error = saveChildPolicies(childPolicies, rows.insertId, data)
+          if (error) errors.push(error)
+          if (err) errors.push(err)
+        })
       }
-    }
+    })
 
-    result.error = 'noErrors';
-    result.message = 'New rate added successfully';
-    return res.send(result);
-  }); // checkToken
-});
+    if (!errors.length) 
+      return res.send({error: 'noErrors', message: 'New rate added successfully'});
+    else return res.send({error: errors, message: 'An error eccured'})
+
+  }) // checkToken
+})
 
 /**
  * Add new rate. Checks if meal values are set (if not, creates null value)
@@ -110,8 +111,9 @@ function(req, res) {
   checkToken(req, res, function() {
     connection.query({
 
-      sql: 'select * from rates where id = ?;',
-      values: [req.params.rateID]
+      sql: `select * from rates where id = ?;
+        select * from rates_childPolicies where rateID = ?;`,
+      values: [req.params.rateID, req.params.rateID]
 
     }, function(err, rows, fields) {
       if (err) {
@@ -120,7 +122,8 @@ function(req, res) {
         return res.send(result);
       } else {
         result.error = 'noErrors';
-        result.rate = rows[0];
+        result.rate = rows[0][0]
+        result.childPolicies = rows[1];
         return res.send(result);
       }
     }); // callback function
@@ -141,9 +144,8 @@ function(req, res) {
   checkToken(req, res, function() {
     connection.query({
 
-      sql: 'select * from rates where roomTypeID = ? order by startDate;' +
-      ' select * from rates_specialdates where roomTypeID = ? order by date;',
-
+      sql: `select * from rates where roomTypeID = ? order by startDate;
+        select * from rates_specialdates where roomTypeID = ? order by date;`,
       values: [req.params.roomTypeID, req.params.roomTypeID]
 
     }, function(err, rows, fields) {
@@ -161,17 +163,6 @@ function(req, res) {
   }); // checkToken
 });
 
-formatDates = (result, res) => {
-  result.rates.forEach( (rate) => {
-    rate.startDate = moment(rate.startDate).format("YYYY-MM-DD")
-    rate.endDate = moment(rate.endDate).format("YYYY-MM-DD")
-  })
-  result.specialDates.forEach( (specialDate) => {
-    specialDate.date = moment(specialDate.date).format("YYYY-MM-DD")
-    specialDate.toDate = moment(specialDate.toDate).format("YYYY-MM-DD")
-  })
-  res.send(result)
-}
 
 /**
  * Update rate
@@ -222,10 +213,6 @@ function(req, res, next) {
         result.error = err;
         result.message = 'An error ocured. Please try again.';
         return res.send(result);
-      } else if (rows.affectedRows === 0) {
-        result.error = 'noRateAdded';
-        result.message = 'No rate found to update. Please try again.';
-        return res.send(result);
       } else {
         result.error = 'noErrors';
         result.message = 'New rate updated successfully';
@@ -235,6 +222,32 @@ function(req, res, next) {
     }); // callback function
   }); // checkToken
 });
+
+
+/**
+ * Delete child policies of one rate
+ *
+ * Method: PUT
+ * Route:  /user/:userID/properties/:propertyID/roomTypes/:roomTypeID/rates/:rateID
+ * @return {Object} result
+ */
+router.put('/user/:userID/properties/:propertyID/roomTypes/:roomTypeID/childPolicies/:rateID',
+function(req, res) {
+  const data = req.body
+  const sql = "update rates_childPolicies set ? where id = ?"
+  let errors = []
+
+  data.forEach( (policy, i) => {
+    connection.query(sql, [data[i], data[i].id], (err, rows) => {
+      if (err) return errors.push(err)
+      return 
+    })
+  })
+
+  if (errors.length >= 0) return res.send({error: 'noErrors', message: "Updated successfully"})
+  return res.send({error: errors, message: "An error occured"})
+})
+
 
 /**
  * Delete one rate
@@ -276,47 +289,39 @@ function(req, res) {
 // FUNCTIONS START HERE
 // #################################################################################
 
-// ---------------------------------------------------------------------------------
+
 // saveRateChildPolicies - used in new rate route
-saveRateChildPolicies = function(rates_childPolicies, rateID) {
-  var result = {};
+saveChildPolicies = function(childPolicies, rateID, data) {
+  let result = {};
+  let error = null
+
   // instert all child policies in db
-  for (var i = 0; i < rates_childPolicies.length; i++) {
+  childPolicies.forEach( (policy) => {
+    policy.propertyID = data.propertyID
+    policy.userID = data.userID
+    policy.rateID = rateID
+    const sql = 'insert into rates_childPolicies set ?'
+    connection.query(sql, policy, (err, rows, fields) => {
+      if (err) console.log(err)
+      error = err
+    })
+  })
 
-    rates_childPolicies[i].rateID = rateID;
-    var result = connection.query({
-
-      sql: 'insert into rates_childPolicies set ?',
-      values: rates_childPolicies[i],
-
-    }, function(err, rows, fields) {
-
-      //TODO add err control
-
-    }); // end of query
-  } // end of loop
-  return "ChildQueriesOk";
+  if (error) return error
+  return null;
 }
 
-// ---------------------------------------------------------------------------------
-// saveRateCancelPolicies - used in new rate route
-saveRateCancelPolicies = function(rates_cancelPolicies, rateID) {
-  var result = {};
-  // instert all child policies in db
-  for (var i = 0; i < rates_cancelPolicies.length; i++) {
-    rates_cancelPolicies[i].rateID = rateID;
-    var result = connection.query({
 
-      sql: 'insert into rates_cancelPolicies set ?',
-      values: rates_cancelPolicies[i],
-
-    }, function(err, rows, fields) {
-
-      //TODO add err control
-
-    }); // end of query
-  } // end of loop
-  return "CancelQueriesOk";
+formatDates = (result, res) => {
+  result.rates.forEach( (rate) => {
+    rate.startDate = moment(rate.startDate).format("YYYY-MM-DD")
+    rate.endDate = moment(rate.endDate).format("YYYY-MM-DD")
+  })
+  result.specialDates.forEach( (specialDate) => {
+    specialDate.date = moment(specialDate.date).format("YYYY-MM-DD")
+    specialDate.toDate = moment(specialDate.toDate).format("YYYY-MM-DD")
+  })
+  res.send(result)
 }
 
 

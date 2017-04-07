@@ -48,8 +48,8 @@ router.get(Routes.allBookingsFull, (req, res, next) => {
   checkToken(req, res, () => {
     connection.query({
 
-      sql: 'select * from bookings where userID',
-      values: [req.params.propertyID, req.params.roomTypeID]
+      sql: 'select * from bookings where propertyID = ?',
+      values: [req.params.propertyID]
 
     }, (err, rows, fields) => {
       var result = {}
@@ -60,7 +60,7 @@ router.get(Routes.allBookingsFull, (req, res, next) => {
         return res.send(result)
       } else {
         result.error = 'noErrors'
-        result.bookingDates = rows
+        result.bookings = rows
         return res.send(result)
       }
     })

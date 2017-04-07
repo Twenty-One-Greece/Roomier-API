@@ -10,9 +10,9 @@
 
    allBookingsMin: '/user/:userID/properties/:propertyID/roomTypes/:roomTypeID/bookings',
 
-   allBookingsFull: '/user/:userID/properties/:propertyID/roomTypes/:roomTypeID/bookingsFull',
+   allBookingsFull: '/user/:userID/properties/:propertyID/bookingsFull',
 
-   deleteBooking: '/user/:userID/properties/:propertyID/roomTypes/:roomTypeID/bookings/:bookingID',
+   deleteBooking: '/user/:userID/properties/:propertyID/bookings/:bookingID',
 
    newBooking: '/user/:userID/properties/:propertyID/roomTypes/:roomTypeID/newBooking'
 
