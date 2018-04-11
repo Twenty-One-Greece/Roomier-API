@@ -70,9 +70,7 @@ router.post('/general-availability/', (req, res) => {
         else return handleResult(res, rows, dayDiff, data)
     })
 })
-// select roomTypeImages.image, roomTypes.id as roomTypeId from roomTypeImages
-//     // join roomTypes on roomTypes.id = roomTypeImages.roomTypeID
-//     // where maxAdults >= ? and maxChildren >= ? and p.city = ? and r.maxPax >= ?;
+
 //Elissaios test route
 //General availability Route backup
 router.post('/general-availability/test', (req, res) => {
@@ -95,7 +93,16 @@ router.post('/general-availability/test', (req, res) => {
     on r.propertyID = p.id where maxAdults >= ? 
     and maxChildren >= ? and p.city = ? and r.maxPax >= ?;
 
-    // 
+
+    select roomTypeImages.image from roomTypeImages
+    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID
+    where roomTypes.propertyID = ?;
+
+
+
+    select roomTypeImages.image, roomTypes.id as roomTypeId from roomTypeImages
+    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID
+    where maxAdults >= ? and maxChildren >= ?;
 
     select * from rates where ((startDate between date(?) and date(?))
     or (endDate between date(?) and date(?))
