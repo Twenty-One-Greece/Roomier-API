@@ -136,9 +136,9 @@ router.post('/general-availability/test', (req, res) => {
     connection.query(sql, values, (err, rows) => {
         if (err) console.log(err);
         // return res.send(rows)
-        else return res.send(rows)
+        // else return res.send(rows)
         // if (err) return res.send({ error: err })
-        // else return handleResult(res, rows, dayDiff, data)
+        else return handleResult(res, rows, dayDiff, data)
     })
 })
 
