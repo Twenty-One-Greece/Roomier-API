@@ -93,7 +93,7 @@ router.post('/general-availability/test', (req, res) => {
     from properties as p join users as u on p.userID = u.id
     where p.city = ? and u.email = ? and p.active = 1;
 
-    select r.name, r.baseOccupancy, r.id, p.id as propertyID
+    select r.name, r.baseOccupancy, r.description, r.id, p.id as propertyID
     from roomTypes as r join properties as p
     on r.propertyID = p.id where maxAdults >= ? 
     and maxChildren >= ? and p.city = ? and r.maxPax >= ?;
