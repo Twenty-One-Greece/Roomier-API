@@ -76,6 +76,7 @@ router.post('/general-availability/test', (req, res) => {
     data.start_date, data.end_date]
 
     // Make the query
+    console.log("tha kanw query")
     connection.query(sql, values, (err, rows) => {
         // if (err) console.log(err);
         // return res.send(rows)
@@ -83,7 +84,7 @@ router.post('/general-availability/test', (req, res) => {
             console.log(err);
             return res.send({ error: err })
         }
-        else return rows
+        else return { rows }
         // handleResult(res, rows, dayDiff, data)
     })
 })
