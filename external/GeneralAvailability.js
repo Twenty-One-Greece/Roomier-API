@@ -71,6 +71,11 @@ router.post('/general-availability/', (req, res) => {
     })
 })
 
+// select roomTypeImages.image from roomTypeImages
+// join roomTypes on roomTypes.id = roomTypeImages.roomTypeID
+// where roomTypes.propertyID = ?;
+
+
 //Elissaios test route
 //General availability Route backup
 router.post('/general-availability/test', (req, res) => {
@@ -94,9 +99,7 @@ router.post('/general-availability/test', (req, res) => {
     and maxChildren >= ? and p.city = ? and r.maxPax >= ?;
 
 
-    select roomTypeImages.image from roomTypeImages
-    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID
-    where roomTypes.propertyID = ?;
+   
 
 
 
