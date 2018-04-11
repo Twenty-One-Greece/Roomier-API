@@ -88,9 +88,40 @@ router.post('/general-availability/test', (req, res) => {
     const today = moment().format("YYYY-MM-DD")
 
     // Gets properties, rooms, and rates
-    const sql = `
-    select roomTypeImages.image, roomTypes.id as roomTypeId, roomTypes.propertyID from roomTypeImages
-    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID;`
+    const sql = `select u.id as userID, u.email, p.id, p.name, p.city, p.country, p.address,
+    p.longitude, p.latitude, p.shortDescription, p.image, p.stars
+    from properties as p join users as u on p.userID = u.id
+    where p.city = ? and u.email = ? and p.active = 1;
+
+    select r.name, r.baseOccupancy, r.id, p.id as propertyID
+    from roomTypes as r join properties as p
+    on r.propertyID = p.id where maxAdults >= ? 
+    and maxChildren >= ? and p.city = ? and r.maxPax >= ?;
+
+    select roomTypeImages.image, roomTypes.propertyID, roomTypes.id as roomTypeId from roomTypeImages
+    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID;
+
+    select * from rates where ((startDate between date(?) and date(?))
+    or (endDate between date(?) and date(?))
+    or (startDate <= date(?) and endDate >= date(?)))
+    order by propertyID, startDate;
+
+    select * from rates_specialdates as sp
+    where (sp.date between date(?) and date(?))
+    or (sp.toDate between date(?) and date(?))
+    or (sp.date <= date(?) and sp.toDate >= date(?));
+
+    select r.*, u.id as userID, u.email from rates_childPolicies as r
+    join users as u on r.userID = u.id
+    where u.email = ? group by r.age, r.id;
+
+    select * from specialOffers as so
+    join specialOffers_dates as sod on so.id = sod.specialOfferID 
+    join specialOffers_rooms as sor on sod.specialOfferID = sor.specialOfferID
+    where ? between sod.bookingDateStart and sod.bookingDateEnd
+    and ? between sod.stayDateStart and sod.stayDateEnd
+    and ? between sod.stayDateStart and sod.stayDateEnd 
+    order by so.cumulative desc;`
 
     // Values for query
     const values = [data.otagDestinationCode, data.username, data.rooms[0].adults,
@@ -104,7 +135,7 @@ router.post('/general-availability/test', (req, res) => {
     // Make the query
     connection.query(sql, values, (err, rows) => {
         if (err) console.log(err);
-        return res.send(rows)
+        return res.send(rows[2])
         // return res.send(rows)
         // else return res.send(rows)
         // if (err) return res.send({ error: err })
