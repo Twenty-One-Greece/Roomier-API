@@ -210,7 +210,7 @@ getRooms = (rooms, allRoomTypeImages, rates, propID, dayDiff, data, specialdates
             let currentRoomImages = []
             allRoomTypeImages.forEach((roomTypeImage, i) => {
                 if (roomTypeImage.roomTypeID === room.id) {
-                    images.push(roomTypeImage.image)
+                    currentRoomImages.push(roomTypeImage.image)
                 }
             })
 
@@ -219,7 +219,7 @@ getRooms = (rooms, allRoomTypeImages, rates, propID, dayDiff, data, specialdates
                 id: room.id,
                 base_occupancy: room.baseOccupancy,
                 mealPlans: getMealPlans(rates, room, data, childPolicies),
-                images: images
+                images: currentRoomImages
             }
 
             // Check if room has a stop sales or 0 alotment or checkInDisallowed
