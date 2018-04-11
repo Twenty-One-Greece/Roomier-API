@@ -81,10 +81,14 @@ router.post('/general-availability/test', (req, res) => {
         // if (err) console.log(err);
         // return res.send(rows)
         if (err) {
+            console.log("sfalmaaaa")
             console.log(err);
             return res.send({ error: err })
         }
-        else return { rows }
+        else {
+            console.log("irthe apantisi")
+            return { rows }
+        }
         // handleResult(res, rows, dayDiff, data)
     })
 })
