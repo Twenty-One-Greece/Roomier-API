@@ -77,9 +77,12 @@ router.post('/general-availability/test', (req, res) => {
 
     // Make the query
     connection.query(sql, values, (err, rows) => {
-        if (err) console.log(err);
+        // if (err) console.log(err);
         // return res.send(rows)
-        if (err) return res.send({ error: err })
+        if (err) {
+            console.log(err);
+            return res.send({ error: err })
+        }
         else return rows
         // handleResult(res, rows, dayDiff, data)
     })
