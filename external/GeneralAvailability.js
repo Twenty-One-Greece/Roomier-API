@@ -122,8 +122,7 @@ router.post('/general-availability/test', (req, res) => {
     order by so.cumulative desc;
 
     select roomTypeImages.image, roomTypes.id as roomTypeId from roomTypeImages
-    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID
-    where maxAdults >= ? and maxChildren >= ?;`
+    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID`
 
     // Values for query
     const values = [data.otagDestinationCode, data.username, data.rooms[0].adults,
