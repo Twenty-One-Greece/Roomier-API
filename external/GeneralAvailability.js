@@ -24,7 +24,34 @@ router.post('/general-availability/', (req, res) => {
     const sql = `select u.id as userID, u.email, p.id, p.name, p.city, p.country, p.address,
     p.longitude, p.latitude, p.shortDescription, p.image, p.stars
     from properties as p join users as u on p.userID = u.id
-    where p.city = ? and u.email = ? and p.active = 1;`
+    where p.city = ? and u.email = ? and p.active = 1;
+
+    select r.name, r.baseOccupancy, r.id, p.id as propertyID
+    from roomTypes as r join properties as p
+    on r.propertyID = p.id where maxAdults >= ? 
+    and maxChildren >= ? and p.city = ? and r.maxPax >= ?;
+
+    select * from rates where ((startDate between date(?) and date(?))
+    or (endDate between date(?) and date(?))
+    or (startDate <= date(?) and endDate >= date(?)))
+    order by propertyID, startDate;
+
+    select * from rates_specialdates as sp
+    where (sp.date between date(?) and date(?))
+    or (sp.toDate between date(?) and date(?))
+    or (sp.date <= date(?) and sp.toDate >= date(?));
+
+    select r.*, u.id as userID, u.email from rates_childPolicies as r
+    join users as u on r.userID = u.id
+    where u.email = ? group by r.age, r.id;
+
+    select * from specialOffers as so
+    join specialOffers_dates as sod on so.id = sod.specialOfferID 
+    join specialOffers_rooms as sor on sod.specialOfferID = sor.specialOfferID
+    where ? between sod.bookingDateStart and sod.bookingDateEnd
+    and ? between sod.stayDateStart and sod.stayDateEnd
+    and ? between sod.stayDateStart and sod.stayDateEnd 
+    order by so.cumulative desc`
 
     // Values for query
     const values = [data.otagDestinationCode, data.username, data.rooms[0].adults,
@@ -44,11 +71,6 @@ router.post('/general-availability/', (req, res) => {
     })
 })
 
-// select roomTypeImages.image, roomTypes.id as roomTypeId from roomTypeImages
-//     join roomTypes on roomTypes.id = roomTypeImages.roomTypeID
-//     where maxAdults >= ? and maxChildren >= ?;
-
-
 //Elissaios test route
 //General availability Route backup
 router.post('/general-availability/test', (req, res) => {
@@ -64,7 +86,40 @@ router.post('/general-availability/test', (req, res) => {
     const sql = `select u.id as userID, u.email, p.id, p.name, p.city, p.country, p.address,
     p.longitude, p.latitude, p.shortDescription, p.image, p.stars
     from properties as p join users as u on p.userID = u.id
-    where p.city = ? and u.email = ? and p.active = 1;`
+    where p.city = ? and u.email = ? and p.active = 1;
+
+    select r.name, r.baseOccupancy, r.id, p.id as propertyID
+    from roomTypes as r join properties as p
+    on r.propertyID = p.id where maxAdults >= ? 
+    and maxChildren >= ? and p.city = ? and r.maxPax >= ?;
+
+
+
+    select roomTypeImages.image, roomTypes.id as roomTypeId from roomTypeImages
+    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID
+    where maxAdults >= ? and maxChildren >= ?;
+
+    select * from rates where ((startDate between date(?) and date(?))
+    or (endDate between date(?) and date(?))
+    or (startDate <= date(?) and endDate >= date(?)))
+    order by propertyID, startDate;
+
+    select * from rates_specialdates as sp
+    where (sp.date between date(?) and date(?))
+    or (sp.toDate between date(?) and date(?))
+    or (sp.date <= date(?) and sp.toDate >= date(?));
+
+    select r.*, u.id as userID, u.email from rates_childPolicies as r
+    join users as u on r.userID = u.id
+    where u.email = ? group by r.age, r.id;
+
+    select * from specialOffers as so
+    join specialOffers_dates as sod on so.id = sod.specialOfferID 
+    join specialOffers_rooms as sor on sod.specialOfferID = sor.specialOfferID
+    where ? between sod.bookingDateStart and sod.bookingDateEnd
+    and ? between sod.stayDateStart and sod.stayDateEnd
+    and ? between sod.stayDateStart and sod.stayDateEnd 
+    order by so.cumulative desc`
 
     // Values for query
     const values = [data.otagDestinationCode, data.username, data.rooms[0].adults,
@@ -76,21 +131,12 @@ router.post('/general-availability/test', (req, res) => {
     data.start_date, data.end_date]
 
     // Make the query
-    console.log("tha kanw query")
     connection.query(sql, values, (err, rows) => {
-        // if (err) console.log(err);
+        if (err) console.log(err);
         // return res.send(rows)
-        if (err) {
-            console.log("sfalmaaaa")
-            console.log(err);
-            return res.send({ error: err })
-        }
-        else {
-            console.log("irthe apantisi")
-            console.log(rows, "e")
-            return { rows }
-        }
-        // handleResult(res, rows, dayDiff, data)
+        else return res.send(rows)
+        // if (err) return res.send({ error: err })
+        // else return handleResult(res, rows, dayDiff, data)
     })
 })
 
