@@ -89,7 +89,7 @@ router.post('/general-availability/test', (req, res) => {
 
     // Gets properties, rooms, and rates
     const sql = `
-    select roomTypeImages.image, roomTypes.id as roomTypeId roomTypes.propertyID from roomTypeImages
+    select roomTypeImages.image, roomTypes.id as roomTypeId, roomTypes.propertyID from roomTypeImages
     join roomTypes on roomTypes.id = roomTypeImages.roomTypeID;`
 
     // Values for query
