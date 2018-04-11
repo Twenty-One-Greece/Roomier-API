@@ -119,7 +119,7 @@ router.post('/general-availability/test', (req, res) => {
     where ? between sod.bookingDateStart and sod.bookingDateEnd
     and ? between sod.stayDateStart and sod.stayDateEnd
     and ? between sod.stayDateStart and sod.stayDateEnd 
-    order by so.cumulative desc
+    order by so.cumulative desc;
 
     select roomTypeImages.image, roomTypes.id as roomTypeId from roomTypeImages
     join roomTypes on roomTypes.id = roomTypeImages.roomTypeID
