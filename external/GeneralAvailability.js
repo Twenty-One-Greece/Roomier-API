@@ -98,6 +98,10 @@ router.post('/general-availability/test', (req, res) => {
     on r.propertyID = p.id where maxAdults >= ? 
     and maxChildren >= ? and p.city = ? and r.maxPax >= ?;
 
+    select roomTypeImages.image, roomTypes.id as roomTypeId from roomTypeImages
+    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID
+    where maxAdults >= ? and maxChildren >= ?;
+
     select * from rates where ((startDate between date(?) and date(?))
     or (endDate between date(?) and date(?))
     or (startDate <= date(?) and endDate >= date(?)))
