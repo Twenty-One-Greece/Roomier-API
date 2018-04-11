@@ -144,7 +144,7 @@ router.post('/general-availability/test', (req, res) => {
 
 // This function formats the results
 handleResult = (res, rows, dayDiff, data) => {
-    const allRoomTypeImages = row[2]
+    const allRoomTypeImages = rows[2]
     const specialdates = rows[4]
     const childPolicies = rows[5]
     const specialOffers = rows[6]
