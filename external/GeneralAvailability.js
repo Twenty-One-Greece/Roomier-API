@@ -87,6 +87,7 @@ router.post('/general-availability/test', (req, res) => {
         }
         else {
             console.log("irthe apantisi")
+            console.log(rows, "e")
             return { rows }
         }
         // handleResult(res, rows, dayDiff, data)
