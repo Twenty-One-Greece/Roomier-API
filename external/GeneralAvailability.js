@@ -88,8 +88,7 @@ router.post('/general-availability/test', (req, res) => {
     const today = moment().format("YYYY-MM-DD")
 
     // Gets properties, rooms, and rates
-    const sql =
-        `select u.id as userID, u.email, p.id, p.name, p.city, p.country, p.address,
+    const sql = `select u.id as userID, u.email, p.id, p.name, p.city, p.country, p.address,
     p.longitude, p.latitude, p.shortDescription, p.image, p.stars
     from properties as p join users as u on p.userID = u.id
     where p.city = ? and u.email = ? and p.active = 1;
@@ -98,6 +97,9 @@ router.post('/general-availability/test', (req, res) => {
     from roomTypes as r join properties as p
     on r.propertyID = p.id where maxAdults >= ? 
     and maxChildren >= ? and p.city = ? and r.maxPax >= ?;
+
+    select roomTypeImages.image, roomTypes.id as roomTypeId from roomTypeImages
+    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID;
 
     select * from rates where ((startDate between date(?) and date(?))
     or (endDate between date(?) and date(?))
@@ -119,10 +121,7 @@ router.post('/general-availability/test', (req, res) => {
     where ? between sod.bookingDateStart and sod.bookingDateEnd
     and ? between sod.stayDateStart and sod.stayDateEnd
     and ? between sod.stayDateStart and sod.stayDateEnd 
-    order by so.cumulative desc;
-
-    select roomTypeImages.image, roomTypes.id as roomTypeId from roomTypeImages
-    join roomTypes on roomTypes.id = roomTypeImages.roomTypeID`
+    order by so.cumulative desc;`
 
     // Values for query
     const values = [data.otagDestinationCode, data.username, data.rooms[0].adults,
