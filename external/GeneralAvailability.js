@@ -224,7 +224,7 @@ getRooms = (rooms, allRoomTypeImages, rates, propID, dayDiff, data, specialdates
                 base_occupancy: room.baseOccupancy,
                 mealPlans: getMealPlans(rates, room, data, childPolicies),
                 images: currentRoomImages,
-                rates:
+                // rates:
             }
 
             // Check if room has a stop sales or 0 alotment or checkInDisallowed
