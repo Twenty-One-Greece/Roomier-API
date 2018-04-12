@@ -219,7 +219,7 @@ getRooms = (rooms, allRoomTypeImages, rates, propID, dayDiff, data, specialdates
             let ratesForSpecificRoom = {}
             rates.forEach((rate) => {
                 if (rate.roomTypeID === room.id) {
-                    ratesForSpecificRoom = {}
+                    ratesForSpecificRoom = rate
                 }
             })
 
@@ -229,7 +229,7 @@ getRooms = (rooms, allRoomTypeImages, rates, propID, dayDiff, data, specialdates
                 base_occupancy: room.baseOccupancy,
                 mealPlans: getMealPlans(rates, room, data, childPolicies),
                 images: currentRoomImages,
-                rates: testForRates
+                rates: ratesForSpecificRoom
             }
 
             // Check if room has a stop sales or 0 alotment or checkInDisallowed
