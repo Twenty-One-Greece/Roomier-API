@@ -216,10 +216,10 @@ getRooms = (rooms, allRoomTypeImages, rates, propID, dayDiff, data, specialdates
             })
 
 
-            let testForRates = []
+            let ratesForSpecificRoom = {}
             rates.forEach((rate) => {
                 if (rate.roomTypeID === room.id) {
-                    testForRates.push(rate)
+                    ratesForSpecificRoom = {}
                 }
             })
 
