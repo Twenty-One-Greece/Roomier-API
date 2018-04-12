@@ -78,7 +78,7 @@ router.post('/general-availability/', (req, res) => {
 
 //Elissaios test route
 //General availability Route backup
-router.post('/general-availability/test', (req, res) => {
+router.post('/all-rooms-info', (req, res) => {
     const data = req.body
     const start_date = moment(data.start_date)
     const end_date = moment(data.end_date)
