@@ -67,7 +67,8 @@ router.post('/general-availability/', (req, res) => {
         if (err) console.log(err);
         // return res.send(rows)
         if (err) return res.send({ error: err })
-        else return handleResult(res, rows, dayDiff, data)
+        rows.splice(2, 0, []);
+        return handleResult(res, rows, dayDiff, data)
     })
 })
 
