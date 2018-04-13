@@ -67,7 +67,11 @@ router.post('/general-availability/', (req, res) => {
         if (err) console.log(err);
         // return res.send(rows)
         if (err) return res.send({ error: err })
+
+        //Add an empty line because we call handle results and from the above route
+        //and we want the arguments to be correctly
         rows.splice(2, 0, []);
+
         return handleResult(res, rows, dayDiff, data)
     })
 })
