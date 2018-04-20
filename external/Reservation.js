@@ -39,15 +39,22 @@ router.post('/reservation/', (req, res) => {
   }
 
   // Make the query. Save reservation in db
-  connection.query(sql, [data.roomTypeID, reservation], (err, rows) => {
-
-    if (err) console.log(err);
-    if (err) return res.send({ status: 'An error ocured' })
-    else return res.send(formatReservation(data, bookingID, rows[0][0]))
+  connection.query(sql, [data.roomTypeID, reservation], (err, rowsFirstQuery) => {
+    if (err) {
+      console.log(err);
+      return res.send({ status: 'An error ocured' })
+    }
+    connection.query(`UPDATE rates_specialdates SET stopSales=1 WHERE roomTypeID= ${reservation.roomTypeID} AND propertyID=${reservation.roomTypeID}`, [data.roomTypeID, reservation], (err, rows) => {
+      if (err) {
+        console.log(err)
+        return res.send({ status: 'An error ocured, booking was made successfully but stopsales could not be updated' })
+      }
+      return res.send(formatReservation(data, bookingID, rowsFirstQuery[0][0]))
+    })
   })
 })
 
-// Create object to send as responce
+// Create object to send as response
 formatReservation = (data, bookingID, name) => {
   return {
     checkOut: data.start_date,
