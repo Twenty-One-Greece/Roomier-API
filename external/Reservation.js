@@ -44,7 +44,7 @@ router.post('/reservation/', (req, res) => {
       console.log(err);
       return res.send({ status: 'An error ocured' })
     }
-
+    console.log("roomtypeid:" + reservation.roomTypeID, "propertyId" + reservation.propertyID)
     let sqlQuery = `UPDATE rates_specialdates SET stopSales=1 WHERE roomTypeID= ${reservation.roomTypeID} AND propertyID=${reservation.propertyID}`
     connection.query(sqlQuery, [data.roomTypeID, reservation], (err, rows) => {
       if (err) {
