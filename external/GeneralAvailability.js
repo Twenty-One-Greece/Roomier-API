@@ -126,7 +126,9 @@ router.post('/all-rooms-info', (req, res) => {
     where ? between sod.bookingDateStart and sod.bookingDateEnd
     and ? between sod.stayDateStart and sod.stayDateEnd
     and ? between sod.stayDateStart and sod.stayDateEnd 
-    order by so.cumulative desc;`
+    order by so.cumulative desc;
+    
+    select bookingID, checkIn, checkOut, roomTypeID from bookings;`
 
     // Values for query
     const values = [data.otagDestinationCode, data.username, data.rooms[0].adults,
@@ -154,7 +156,7 @@ handleResult = (res, rows, dayDiff, data) => {
     const specialdates = rows[4]
     const childPolicies = rows[5]
     const specialOffers = rows[6]
-
+    const bookings = rows[7]
     results = []
 
     rows[0].forEach((property) => {
@@ -173,6 +175,7 @@ handleResult = (res, rows, dayDiff, data) => {
             photo: property.image,
             description: property.shortDescription,
             rooms: getRooms(rows[1], allRoomTypeImages, rows[3], property.id, dayDiff, data, specialdates, childPolicies),
+            bookings : bookings
         }
         if (result.rooms) results.push(result)
     }) // For each property
