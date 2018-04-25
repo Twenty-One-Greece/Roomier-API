@@ -159,7 +159,6 @@ handleResult = (res, rows, dayDiff, data) => {
     const bookings = rows[7]
 
     console.log(bookings)
-    console.log(start_date, end_date)
     results = []
 
     rows[0].forEach((property) => {
