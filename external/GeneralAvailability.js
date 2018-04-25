@@ -145,7 +145,7 @@ router.post('/all-rooms-info', (req, res) => {
         // return res.send(rows[2])
         // return res.send(rows)
         // else return res.send(rows)
-        const bookings = rows[7];
+        let bookings = rows[7];
 
         console.log('rows 0 ', rows[0])
         console.log('bookings ', bookings)
