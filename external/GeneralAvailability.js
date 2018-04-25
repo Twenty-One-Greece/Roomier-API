@@ -178,8 +178,7 @@ handleResult = (res, rows, dayDiff, data) => {
             },
             photo: property.image,
             description: property.shortDescription,
-            rooms: getRooms(rows[1], allRoomTypeImages, rows[3], property.id, dayDiff, data, specialdates, childPolicies),
-            bookings : bookings
+            rooms: getRooms(rows[1], allRoomTypeImages, rows[3], property.id, dayDiff, data, specialdates, childPolicies)
         }
         if (result.rooms) results.push(result)
     }) // For each property
