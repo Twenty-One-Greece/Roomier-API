@@ -157,6 +157,8 @@ handleResult = (res, rows, dayDiff, data) => {
     const childPolicies = rows[5]
     const specialOffers = rows[6]
     const bookings = rows[7]
+
+    console.log(bookings)
     results = []
 
     rows[0].forEach((property) => {
