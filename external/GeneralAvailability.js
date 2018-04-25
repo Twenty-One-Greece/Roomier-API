@@ -145,6 +145,11 @@ router.post('/all-rooms-info', (req, res) => {
         // return res.send(rows[2])
         // return res.send(rows)
         // else return res.send(rows)
+        const bookings = rows[7];
+
+        console.log('rows 0 ', rows[0])
+        console.log('bookings ', bookings)
+
         if (err) return res.send({ error: err })
         else return handleResult(res, rows, dayDiff, data)
     })
@@ -156,9 +161,6 @@ handleResult = (res, rows, dayDiff, data) => {
     const specialdates = rows[4]
     const childPolicies = rows[5]
     const specialOffers = rows[6]
-    const bookings = rows[7]
-
-    console.log(bookings)
     results = []
 
     rows[0].forEach((property) => {
